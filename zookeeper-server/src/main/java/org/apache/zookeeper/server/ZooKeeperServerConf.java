@@ -22,6 +22,7 @@ import java.util.Map;
 
 /**
  * Configuration data for a {@link ZooKeeperServer}. This class is immutable.
+ * zoo.cfg配置对应的内容conf.
  */
 public class ZooKeeperServerConf {
     /**
@@ -61,9 +62,18 @@ public class ZooKeeperServerConf {
      */
     public static final String KEY_SERVER_ID = "server_id";
 
+    /**
+     * 这个端口就是客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求。
+     */
     private final int clientPort;
+    /**
+     * 存储内存中数据库快照的位置，顾名思义就是 Zookeeper 保存数据的目录，默认情况下，Zookeeper 将写数据的日志文件也保存在这个目录里
+     */
     private final String dataDir;
     private final String dataLogDir;
+    /**
+     * 这个时间是作为 Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔，也就是每个 tickTime 时间就会发送一个心跳。
+     */
     private final int tickTime;
     private final int maxClientCnxnsPerHost;
     private final int minSessionTimeout;

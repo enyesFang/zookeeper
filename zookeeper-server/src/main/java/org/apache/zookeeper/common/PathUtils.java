@@ -37,6 +37,7 @@ public class PathUtils {
 	
     /**
      * Validate the provided znode path string
+     * znode path 合法性校验。
      * @param path znode path string
      * @throws IllegalArgumentException if the path is invalid
      */

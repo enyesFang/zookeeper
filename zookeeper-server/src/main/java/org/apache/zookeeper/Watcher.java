@@ -26,7 +26,7 @@ import org.apache.yetus.audience.InterfaceAudience;
  * server it connects to. An application using such a client handles these
  * events by registering a callback object with the client. The callback object
  * is expected to be an instance of a class that implements Watcher interface.
- * 
+ * 一个Watch事件是一个一次性的触发器，当被设置了Watch的数据发生了改变的时候，则服务器将这个改变发送给设置了Watch的客户端，以便通知它们。
  */
 @InterfaceAudience.Public
 public interface Watcher {
@@ -197,5 +197,10 @@ public interface Watcher {
         }
     }
 
+    /**
+     * 监控所有被触发的事件.
+     * 当对目录节点监控状态打开时，一旦目录节点的状态发生变化，Watcher 对象的 process 方法就会被调用.
+     * @param event
+     */
     abstract public void process(WatchedEvent event);
 }

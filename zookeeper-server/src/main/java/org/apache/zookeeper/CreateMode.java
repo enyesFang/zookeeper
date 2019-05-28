@@ -29,20 +29,26 @@ public enum CreateMode {
     
     /**
      * The znode will not be automatically deleted upon client's disconnect.
+     * 持久化目录节点，这个目录节点存储的数据不会丢失.
      */
     PERSISTENT (0, false, false, false, false),
     /**
     * The znode will not be automatically deleted upon client's disconnect,
     * and its name will be appended with a monotonically increasing number.
+     * 顺序自动编号的目录节点，这种目录节点会根据当前已近存在的节点数自动加 1，然后返回给客户端已经成功创建的目录节点名.
     */
     PERSISTENT_SEQUENTIAL (2, false, true, false, false),
     /**
      * The znode will be deleted upon the client's disconnect.
+     * 临时znode，当与server断开时节点删除。
+     * 临时目录节点，一旦创建这个节点的客户端与服务器端口也就是 session 超时，这种节点会被自动删除
+     * EPHEMERAL类型的目录节点不能有子节点目录.
      */
     EPHEMERAL (1, true, false, false, false),
     /**
      * The znode will be deleted upon the client's disconnect, and its name
      * will be appended with a monotonically increasing number.
+     * 临时自动编号节点.
      */
     EPHEMERAL_SEQUENTIAL (3, true, true, false, false),
     /**

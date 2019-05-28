@@ -138,6 +138,9 @@ import java.util.Set;
  * by AutoCloseable (see: http://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html#close()).
  * close() will never throw an InterruptedException but the exception remains in the
  * signature for backwards compatibility purposes.
+ * ZooKeeper的节点既可以被看做是一个文件，又可以被看做是一个目录，它同时具有二者的特点.
+ * 创建ZooKeeper对象时, 只要对象完成初始化便立刻返回. 建立连接是以异步的形式进行的, 当连接成功建立后, 会回调watcher的process方法.
+ * 如果想要同步建立与server的连接, 需要自己进一步封装。
 */
 @SuppressWarnings("try")
 @InterfaceAudience.Public
@@ -1496,13 +1499,13 @@ public class ZooKeeper implements AutoCloseable {
      * <p>
      * The maximum allowable size of the data array is 1 MB (1,048,576 bytes).
      * Arrays larger than this will cause a KeeperExecption to be thrown.
-     *
+     * 创建一个给定的目录节点 path, 并给它设置数据；
      * @param path
      *                the path for the node
      * @param data
      *                the initial data for the node
      * @param acl
-     *                the acl for the node
+     *                the acl for the node,如ZooDefs.Ids.OPEN_ACL_UNSAFE。
      * @param createMode
      *                specifying whether the node to be created is ephemeral
      *                and/or sequential
@@ -2033,7 +2036,9 @@ public class ZooKeeper implements AutoCloseable {
      * a watch will be left on the node with the given path. The watch will be
      * triggered by a successful operation that creates/delete the node or sets
      * the data on the node.
-     *
+     * 判断某个 path 是否存在，并设置是否监控这个目录节点，这里的 watcher 是在创建 ZooKeeper 实例时指定的 watcher；
+     * exists方法还有一个重载方法，可以指定特定的 watcher
+     * @see #exists(String, Watcher) 重载方法，可以指定特定的 watcher
      * @param path
      *                the node path
      * @param watch
@@ -2605,7 +2610,7 @@ public class ZooKeeper implements AutoCloseable {
      * <p>
      * A KeeperException with error code KeeperException.NoNode will be thrown
      * if no node with the given path exists.
-     *
+     * 获取指定 path 下的所有子目录节点，同样 getChildren方法也有一个重载方法可以设置特定的 watcher 监控子节点的状态.
      * @param path
      * @param watch
      * @return an unordered array of children of the node with the given path
