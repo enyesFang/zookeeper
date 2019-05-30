@@ -1368,7 +1368,7 @@ public class ZooKeeper implements AutoCloseable {
      * Add the specified scheme:auth information to this connection.
      *
      * This method is NOT thread safe
-     *
+     * 客户端将自己的授权信息提交给服务器，服务器将根据这个授权信息验证客户端的访问权限。
      * @param scheme
      * @param auth
      */
@@ -1757,7 +1757,7 @@ public class ZooKeeper implements AutoCloseable {
      * This operation, if successful, will trigger all the watches on the node
      * of the given path left by exists API calls, and the watches on the parent
      * node left by getChildren API calls.
-     *
+     * 删除 path 对应的目录节点，version 为 ­1 可以匹配任何版本，也就删 除了这个目录节点所有数据.
      * @param path
      *                the path of the node to be deleted.
      * @param version
@@ -1987,7 +1987,9 @@ public class ZooKeeper implements AutoCloseable {
      * a watch will be left on the node with the given path. The watch will be
      * triggered by a successful operation that creates/delete the node or sets
      * the data on the node.
-     *
+     * 重载方法，这里给某个目录节点设置特定的 watcher，Watcher 在 ZooKeeper 是一个核心功能，Watcher 可以监控目录节点的数据变化以
+     * 及子目录的变化，一旦这些状态发生变化，服务器就会通知所有设置在 这个目录节点上的 Watcher，
+     * 从而每个客户端都很快知道它所关注的目 录节点的状态发生变化，而做出相应的反应.
      * @param path the node path
      * @param watcher explicit watcher
      * @return the stat of the node of the given path; return null if no such a
@@ -2152,7 +2154,7 @@ public class ZooKeeper implements AutoCloseable {
      * <p>
      * A KeeperException with error code KeeperException.NoNode will be thrown
      * if no node with the given path exists.
-     *
+     * 获取这个 path 对应的目录节点存储的数据，数据的版本等信息可以通过 stat 来指定，同时还可以设置是否监控这个目录节点数据的状态.
      * @param path the given path
      * @param watch whether need to watch this node
      * @param stat the stat of the node
@@ -2357,7 +2359,7 @@ public class ZooKeeper implements AutoCloseable {
      * <p>
      * The maximum allowable size of the data array is 1 MB (1,048,576 bytes).
      * Arrays larger than this will cause a KeeperException to be thrown.
-     *
+     * 给 path 设置数据，可以指定这个数据的版本号，如果 version 为 ­1 可以匹配任何版本.
      * @param path
      *                the path of the node
      * @param data
@@ -2458,7 +2460,7 @@ public class ZooKeeper implements AutoCloseable {
 
     /**
      * The asynchronous version of getACL.
-     *
+     * 获取某个目录节点的访问权限列表.
      * @see #getACL(String, Stat)
      */
     public void getACL(final String path, Stat stat, ACLCallback cb,
@@ -2488,6 +2490,7 @@ public class ZooKeeper implements AutoCloseable {
      * <p>
      * A KeeperException with error code KeeperException.BadVersion will be
      * thrown if the given aclVersion does not match the node's aclVersion.
+     * 给某个目录节点重新设置访问权限，需要注意的是 Zookeeper 中的目录节点权限不具有传递性，父目录节点的权限不能传递给子目录节点。
      *
      * @param path the given path for the node
      * @param acl the given acl for the node

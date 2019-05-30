@@ -88,6 +88,9 @@ public class ZooDefs {
         public final int error = -1;
     }
 
+    /**
+     * @see ACL
+     */
     @InterfaceAudience.Public
     public interface Perms {
         int READ = 1 << 0;
@@ -103,6 +106,9 @@ public class ZooDefs {
         int ALL = READ | WRITE | CREATE | DELETE | ADMIN;
     }
 
+    /**
+     * @see ACL
+     */
     @InterfaceAudience.Public
     public interface Ids {
         /**

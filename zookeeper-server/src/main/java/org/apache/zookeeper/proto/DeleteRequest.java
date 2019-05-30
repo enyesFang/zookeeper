@@ -17,59 +17,44 @@
  * limitations under the License.
  */
 
-package org.apache.zookeeper.data;
+package org.apache.zookeeper.proto;
 
 import org.apache.jute.*;
 import org.apache.yetus.audience.InterfaceAudience;
-
-/**
- * access control list，访问控制列表.
- * ACL通过设置ID以及与其关联的权限来完成访问控制的
- * 目录节点 ACL 由两部分组成:perms 和 id。Perms 有 ALL、READ、WRITE、CREATE、DELETE、ADMIN 几种.
- * id 标识了访问目录节点的身份列表，默认情况下有以下两种: ANYONE_ID_UNSAFE = new Id("world", "anyone") 和 AUTH_IDS = new Id("auth", "") 分别表示任何人都可以访问和创建者拥有访问权限。
- */
 @InterfaceAudience.Public
-public class ACL implements Record {
-    /**
-     * 设置权限为来表明是否允许对一个结点的相关内容的改变
-     * @see org.apache.zookeeper.ZooDefs.Perms
-     */
-    private int perms;
-    /**
-     * @see org.apache.zookeeper.ZooDefs.Ids
-     */
-    private org.apache.zookeeper.data.Id id;
-    public ACL() {
+public class DeleteRequest implements Record {
+    private String path;
+    private int version;
+    public DeleteRequest() {
     }
-    public ACL(
-            int perms,
-            org.apache.zookeeper.data.Id id) {
-        this.perms=perms;
-        this.id=id;
+    public DeleteRequest(
+            String path,
+            int version) {
+        this.path=path;
+        this.version=version;
     }
-    public int getPerms() {
-        return perms;
+    public String getPath() {
+        return path;
     }
-    public void setPerms(int m_) {
-        perms=m_;
+    public void setPath(String m_) {
+        path=m_;
     }
-    public org.apache.zookeeper.data.Id getId() {
-        return id;
+    public int getVersion() {
+        return version;
     }
-    public void setId(org.apache.zookeeper.data.Id m_) {
-        id=m_;
+    public void setVersion(int m_) {
+        version=m_;
     }
     public void serialize(OutputArchive a_, String tag) throws java.io.IOException {
         a_.startRecord(this,tag);
-        a_.writeInt(perms,"perms");
-        a_.writeRecord(id,"id");
+        a_.writeString(path,"path");
+        a_.writeInt(version,"version");
         a_.endRecord(this,tag);
     }
     public void deserialize(InputArchive a_, String tag) throws java.io.IOException {
         a_.startRecord(tag);
-        perms=a_.readInt("perms");
-        id= new org.apache.zookeeper.data.Id();
-        a_.readRecord(id,"id");
+        path=a_.readString("path");
+        version=a_.readInt("version");
         a_.endRecord(tag);
     }
     public String toString() {
@@ -79,8 +64,8 @@ public class ACL implements Record {
             CsvOutputArchive a_ =
                     new CsvOutputArchive(s);
             a_.startRecord(this,"");
-            a_.writeInt(perms,"perms");
-            a_.writeRecord(id,"id");
+            a_.writeString(path,"path");
+            a_.writeInt(version,"version");
             a_.endRecord(this,"");
             return new String(s.toByteArray(), "UTF-8");
         } catch (Throwable ex) {
@@ -97,42 +82,42 @@ public class ACL implements Record {
         deserialize(archive, "");
     }
     public int compareTo (Object peer_) throws ClassCastException {
-        if (!(peer_ instanceof ACL)) {
+        if (!(peer_ instanceof DeleteRequest)) {
             throw new ClassCastException("Comparing different types of records.");
         }
-        ACL peer = (ACL) peer_;
+        DeleteRequest peer = (DeleteRequest) peer_;
         int ret = 0;
-        ret = (perms == peer.perms)? 0 :((perms<peer.perms)?-1:1);
+        ret = path.compareTo(peer.path);
         if (ret != 0) return ret;
-        ret = id.compareTo(peer.id);
+        ret = (version == peer.version)? 0 :((version<peer.version)?-1:1);
         if (ret != 0) return ret;
         return ret;
     }
     public boolean equals(Object peer_) {
-        if (!(peer_ instanceof ACL)) {
+        if (!(peer_ instanceof DeleteRequest)) {
             return false;
         }
         if (peer_ == this) {
             return true;
         }
-        ACL peer = (ACL) peer_;
+        DeleteRequest peer = (DeleteRequest) peer_;
         boolean ret = false;
-        ret = (perms==peer.perms);
+        ret = path.equals(peer.path);
         if (!ret) return ret;
-        ret = id.equals(peer.id);
+        ret = (version==peer.version);
         if (!ret) return ret;
         return ret;
     }
     public int hashCode() {
         int result = 17;
         int ret;
-        ret = (int)perms;
+        ret = path.hashCode();
         result = 37*result + ret;
-        ret = id.hashCode();
+        ret = (int)version;
         result = 37*result + ret;
         return result;
     }
     public static String signature() {
-        return "LACL(iLId(ss))";
+        return "LDeleteRequest(si)";
     }
 }
