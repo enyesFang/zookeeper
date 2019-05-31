@@ -58,10 +58,12 @@ public interface AsyncCallback {
          * </li>
          * </ul>
          *
-         * @param rc   The return code or the result of the call.
-         * @param path The path that we passed to asynchronous calls.
+         * @param rc   The return code or the result of the call. 返回代码，对应于KeeperException的代码。非0都代表着一个异常，在这种情况下，stat参数为null。
+         * @param path The path that we passed to asynchronous calls. 客户端exists方法参数回传。
          * @param ctx  Whatever context object that we passed to
          *             asynchronous calls.
+         *             客户端exists方法参数回传。该参数可以是任意对象，当path参数不能提供足够的信息时，可以通过ctx来区分不同的请求。
+         *             如果path提供了足够的信息，ctx参数可以为null。
          * @param stat {@link org.apache.zookeeper.data.Stat} object of
          *             the node on given path.
          */

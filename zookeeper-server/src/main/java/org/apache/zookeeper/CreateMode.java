@@ -40,9 +40,10 @@ public enum CreateMode {
     PERSISTENT_SEQUENTIAL (2, false, true, false, false),
     /**
      * The znode will be deleted upon the client's disconnect.
-     * 临时znode，当与server断开时节点删除。
+     * 临时znode，当与server断开时节点删除。但它们对所有的客户端还是可见的。
      * 临时目录节点，一旦创建这个节点的客户端与服务器端口也就是 session 超时，这种节点会被自动删除
      * EPHEMERAL类型的目录节点不能有子节点目录.
+     *
      */
     EPHEMERAL (1, true, false, false, false),
     /**
@@ -78,6 +79,10 @@ public enum CreateMode {
     private static final Logger LOG = LoggerFactory.getLogger(CreateMode.class);
 
     private boolean ephemeral;
+    /**
+     * 顺序号。在创建znode时，名称会附件一个值，这个值是有父节点维护的一个单调递增的计数器所添加。
+     * 顺序znode的实际路径会作为crete()方法的返回值被回传给客户端。
+     */
     private boolean sequential;
     private final boolean isContainer;
     private int flag;

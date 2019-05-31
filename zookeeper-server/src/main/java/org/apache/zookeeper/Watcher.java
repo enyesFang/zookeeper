@@ -27,6 +27,7 @@ import org.apache.yetus.audience.InterfaceAudience;
  * events by registering a callback object with the client. The callback object
  * is expected to be an instance of a class that implements Watcher interface.
  * 一个Watch事件是一个一次性的触发器，当被设置了Watch的数据发生了改变的时候，则服务器将这个改变发送给设置了Watch的客户端，以便通知它们。
+ * 观察只会触发一次(对连接事件的回调除外，这种观察不需要重新注册)，为了能多次收到通知，客户端需要重新注册所需的观察。
  */
 @InterfaceAudience.Public
 public interface Watcher {
@@ -56,7 +57,9 @@ public interface Watcher {
             /** The client is in the connected state - it is connected
              * to a server in the ensemble (one of the servers specified
              * in the host connection parameter during ZooKeeper client
-             * creation). */
+             * creation).
+             * 连接成功。
+             * */
             SyncConnected (3),
 
             /**

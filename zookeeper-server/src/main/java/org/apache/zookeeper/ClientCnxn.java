@@ -167,8 +167,14 @@ public class ClientCnxn {
 
     final String chrootPath;
 
+    /**
+     * 异步连接zookeeper服务的线程。
+     */
     final SendThread sendThread;
 
+    /**
+     * watcher事件线程。
+     */
     final EventThread eventThread;
 
     /**

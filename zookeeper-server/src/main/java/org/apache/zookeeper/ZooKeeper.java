@@ -832,7 +832,9 @@ public class ZooKeeper implements AutoCloseable {
      * For backward compatibility, there is another version
      * {@link #ZooKeeper(String, int, Watcher, boolean)} which uses default
      * {@link StaticHostProvider}
-     *
+     * 当zookeeper实例被创建时，会启动一个线程连接到zookeeper服务。由于构造函数的调用时立即返回的，
+     * 因此在使用zookeeper对象之前一定要等待其余服务端建立连接成功。
+     * 创建程序可以使用CountDownLatch来阻止新建的zookeeper对象，直到这个zookeeper对象已经准备就绪。
      * @param connectString
      *            comma separated host:port pairs, each corresponding to a zk
      *            server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002" If
@@ -1500,6 +1502,7 @@ public class ZooKeeper implements AutoCloseable {
      * The maximum allowable size of the data array is 1 MB (1,048,576 bytes).
      * Arrays larger than this will cause a KeeperExecption to be thrown.
      * 创建一个给定的目录节点 path, 并给它设置数据；
+     * 必须要有父节点，并且父节点不是临时节点。
      * @param path
      *                the path for the node
      * @param data
@@ -1758,6 +1761,7 @@ public class ZooKeeper implements AutoCloseable {
      * of the given path left by exists API calls, and the watches on the parent
      * node left by getChildren API calls.
      * 删除 path 对应的目录节点，version 为 ­1 可以匹配任何版本，也就删 除了这个目录节点所有数据.
+     * 该znode不能有任何子节点。
      * @param path
      *                the path of the node to be deleted.
      * @param version
@@ -2058,7 +2062,7 @@ public class ZooKeeper implements AutoCloseable {
 
     /**
      * The asynchronous version of exists.
-     *
+     * 异步执行，触发回调。
      * @see #exists(String, Watcher)
      */
     public void exists(final String path, Watcher watcher,
@@ -2797,6 +2801,7 @@ public class ZooKeeper implements AutoCloseable {
 
     /**
      * Asynchronous sync. Flushes channel between process and leader.
+     * 将客户端的znode试图与Zookeeper同步。
      * @param path
      * @param cb a handler for the callback
      * @param ctx context to be provided to the callback
