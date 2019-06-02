@@ -23,6 +23,12 @@ import org.apache.jute.*;
 import org.apache.yetus.audience.InterfaceAudience;
 @InterfaceAudience.Public
 public class Id implements Record {
+    /**
+     * 身份验证模式。
+     * digest：使用用户名和密码来识别客户端。
+     * host：通过客户端的注解名(hostname)来识别客户端。
+     * ip：通过客户端的ip来识别客户端。
+     */
     private String scheme;
     private String id;
     public Id() {

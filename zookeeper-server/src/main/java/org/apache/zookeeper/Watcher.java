@@ -28,6 +28,13 @@ import org.apache.yetus.audience.InterfaceAudience;
  * is expected to be an instance of a class that implements Watcher interface.
  * 一个Watch事件是一个一次性的触发器，当被设置了Watch的数据发生了改变的时候，则服务器将这个改变发送给设置了Watch的客户端，以便通知它们。
  * 观察只会触发一次(对连接事件的回调除外，这种观察不需要重新注册)，为了能多次收到通知，客户端需要重新注册所需的观察。
+ * 1.当观察的znode被创建、删除或者其数据被更新时，设置在exists操作上的watcher将被触发。
+ * 2.当观察的znode被删除或其数据被更新时，设置在getData操作上的watcher将被触发。创建zode不会触发getData的watcher，因为getData操作执行成功的前提是znode必须存在。
+ * 3.当观察的znode的一个子节点被创建或者删除，或观察的znode自己被删除时，设置设置在getChildren上的watcher将会被触发。
+ * 可以通过观察事件的类型来判断被删除的是znode还是其子节点；NodeDelete代表znode被删除，NodeChildrenChanged代表一个子节点被删除。
+ * 4.对于NodeCreated和NodeDeleted事件，通过WatchedEvent#path来判断哪一个节点被创建或者删除。
+ * 5.NodeChildrenChanged事件需要重新调用getChildren来新的子节点列表，用于判断哪些子节点被修改。
+ * 6.NodeDataChanged事件之后调用getData获取新的数据。但在getChildren或getData期间，znode状态可能会发生改变。
  */
 @InterfaceAudience.Public
 public interface Watcher {
@@ -86,7 +93,9 @@ public interface Watcher {
             /** The serving cluster has expired this session. The ZooKeeper
              * client connection (the session) is no longer valid. You must
              * create a new client connection (instantiate a new ZooKeeper
-             * instance) if you with to access the ensemble. */
+             * instance) if you with to access the ensemble.
+             * 会话超时。
+             * */
             Expired (-112),
             
             /** 
@@ -132,8 +141,14 @@ public interface Watcher {
         public enum EventType {
             None (-1),
             NodeCreated (1),
+            /**
+             * znode节点被删除。
+             */
             NodeDeleted (2),
             NodeDataChanged (3),
+            /**
+             * znode的子节点被删除。
+             */
             NodeChildrenChanged (4),
             DataWatchRemoved (5),
             ChildWatchRemoved (6);

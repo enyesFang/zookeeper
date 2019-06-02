@@ -39,14 +39,23 @@ import java.util.TreeSet;
  *  some time later. <p/> You can register a listener so that you are invoked 
  *  when you get the lock; otherwise you can ask if you have the lock
  *  by calling {@link #isOwner()}
- *
+ * 分布式锁。
  */
 public class WriteLock extends ProtocolSupport {
     private static final Logger LOG = LoggerFactory.getLogger(WriteLock.class);
 
     private final String dir;
+    /**
+     * 上一次创建的znode path。
+     */
     private String id;
+    /**
+     * 本次加锁的znode节点名称。
+     */
     private ZNodeName idName;
+    /**
+     * 当前锁的持有者。也就是dir的第一个节点。
+     */
     private String ownerId;
     private String lastChildId;
     private byte[] data = {0x12, 0x34};
@@ -167,7 +176,7 @@ public class WriteLock extends ProtocolSupport {
      */
     private  class LockZooKeeperOperation implements ZooKeeperOperation {
         
-        /** find if we have been created earler if not create our node
+        /** find if we have been created earler, if not create our node
          * 
          * @param prefix the prefix node
          * @param zookeeper teh zookeeper client
@@ -228,6 +237,7 @@ public class WriteLock extends ProtocolSupport {
                         sortedNames.add(new ZNodeName(dir + "/" + name));
                     }
                     ownerId = sortedNames.first().getName();
+                    // 找到本机加锁节点的之前节点
                     SortedSet<ZNodeName> lessThanMe = sortedNames.headSet(idName);
                     if (!lessThanMe.isEmpty()) {
                         ZNodeName lastChildName = lessThanMe.last();
@@ -235,6 +245,7 @@ public class WriteLock extends ProtocolSupport {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("watching less than me node: " + lastChildId);
                         }
+                        // 监听当前锁节点的上一个节点，当它释放锁时，当前节点即可获取分布式锁。
                         Stat stat = zookeeper.exists(lastChildId, new LockWatcher());
                         if (stat != null) {
                             return Boolean.FALSE;

@@ -34,6 +34,9 @@ import org.apache.zookeeper.Watcher.Event.KeeperState;
 public class WatchedEvent {
     final private KeeperState keeperState;
     final private EventType eventType;
+    /**
+     * znode的路径。
+     */
     private String path;
     
     /**

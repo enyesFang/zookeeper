@@ -109,7 +109,8 @@ class ProtocolSupport {
 
 
     /**
-     * Perform the given operation, retrying if the connection fails
+     * Perform the given operation, retrying if the connection fails.
+     * 在与zookeeper服务端连接失败时，重试。
      * @return object. it needs to be cast to the callee's expected 
      * return type.
      */

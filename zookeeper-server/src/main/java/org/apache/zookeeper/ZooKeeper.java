@@ -623,10 +623,30 @@ public class ZooKeeper implements AutoCloseable {
         }
     }
 
+    /**
+     * zookeeper对象在生命周期中经历的几种不同的状态。
+     */
     @InterfaceAudience.Public
     public enum States {
-        CONNECTING, ASSOCIATING, CONNECTED, CONNECTEDREADONLY,
-        CLOSED, AUTH_FAILED, NOT_CONNECTED;
+        /**
+         * 一个新建的zookeeper实例处于CONNECTING状态。
+         * @see ZooKeeper 构造函数
+         * @see Watcher.Event.KeeperState#Disconnected
+         */
+        CONNECTING,
+        ASSOCIATING,
+        /**
+         * 建立连接，进入CONNECTED状态。
+         * @see Watcher.Event.KeeperState#SyncConnected
+         */
+        CONNECTED, CONNECTEDREADONLY,
+        /**
+         * 关闭状态，非活跃的。需要重新连接到Zookeeper服务，客户端必须创建一个新的zookeeper实例。
+         * @see ZooKeeper#close()
+         * @see Watcher.Event.KeeperState#Expired
+         */
+        CLOSED,
+        AUTH_FAILED, NOT_CONNECTED;
 
         public boolean isAlive() {
             return this != CLOSED && this != AUTH_FAILED;
@@ -1371,6 +1391,7 @@ public class ZooKeeper implements AutoCloseable {
      *
      * This method is NOT thread safe
      * 客户端将自己的授权信息提交给服务器，服务器将根据这个授权信息验证客户端的访问权限。
+     *
      * @param scheme
      * @param auth
      */
@@ -2161,7 +2182,7 @@ public class ZooKeeper implements AutoCloseable {
      * 获取这个 path 对应的目录节点存储的数据，数据的版本等信息可以通过 stat 来指定，同时还可以设置是否监控这个目录节点数据的状态.
      * @param path the given path
      * @param watch whether need to watch this node
-     * @param stat the stat of the node
+     * @param stat the stat of the node,如果不关心元数据，stat传入null。
      * @return the data of the node
      * @throws KeeperException If the server signals an error with a non-zero error code
      * @throws InterruptedException If the server transaction is interrupted.
@@ -2989,6 +3010,10 @@ public class ZooKeeper implements AutoCloseable {
         return request;
     }
 
+    /**
+     * zookeeper对象在生命周期中经历的几种不同的状态。
+     * @return
+     */
     public States getState() {
         return cnxn.getState();
     }
