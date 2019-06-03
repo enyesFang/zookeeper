@@ -30,7 +30,6 @@ import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
  * Server configuration storage.
  *
  * We use this instead of Properties as it's typed.
- *
  */
 @InterfaceAudience.Public
 public class ServerConfig {

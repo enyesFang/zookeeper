@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class starts and runs a standalone ZooKeeperServer.
+ * zk 服务端Main入口。
  */
 @InterfaceAudience.Public
 public class ZooKeeperServerMain {
