@@ -25,6 +25,10 @@ import org.apache.yetus.audience.InterfaceAudience;
 
 /**
  * znode的状态信息，比如版本、权限、创建更新时间等信息。
+ * 为了保证事务的顺序一致性，zookeeper采用了递增的事务id号（zxid）来标识事务。
+ * 所有的提议（proposal）都在被提出的时候加上了zxid。
+ * 实现中zxid是一个64位的数字，它高32位是epoch用来标识leader关系是否改变，每次一个leader被选出来，它都会有一个新的epoch，标识当前属于那个leader的统治时期。
+ * 低32位用于递增计数。
  */
 @InterfaceAudience.Public
 public class Stat implements Record {

@@ -2823,6 +2823,8 @@ public class ZooKeeper implements AutoCloseable {
     /**
      * Asynchronous sync. Flushes channel between process and leader.
      * 将客户端的znode试图与Zookeeper同步。
+     * 实时性：Zookeeper保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。
+     * 但由于网络延时等原因，Zookeeper不能保证两个客户端能同时得到刚更新的数据，如果需要最新数据，应该在读数据之前调用sync()接口。
      * @param path
      * @param cb a handler for the callback
      * @param ctx context to be provided to the callback

@@ -413,7 +413,19 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
 
 
     public enum ServerState {
-        LOOKING, FOLLOWING, LEADING, OBSERVING;
+        /**
+         * 当前Server不知道leader是谁，正在搜寻.
+         */
+        LOOKING,
+        /**
+         * leader已经选举出来，当前Server与之同步
+         */
+        FOLLOWING,
+        /**
+         * 当前Server即为选举出来的leader
+         */
+        LEADING,
+        OBSERVING;
     }
 
     /*
