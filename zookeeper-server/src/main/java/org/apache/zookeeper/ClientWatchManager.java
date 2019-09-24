@@ -29,7 +29,7 @@ public interface ClientWatchManager {
      * internal structure as if the watches had triggered. The intent being 
      * that the callee is now responsible for notifying the watchers of the 
      * event, possibly at some later time.
-     * 
+     * 根据事件和znode path，返回需要通知的watcher。
      * @param state event state
      * @param type event type
      * @param path event path

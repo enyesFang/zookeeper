@@ -35,6 +35,7 @@ import org.apache.yetus.audience.InterfaceAudience;
  * 4.对于NodeCreated和NodeDeleted事件，通过WatchedEvent#path来判断哪一个节点被创建或者删除。
  * 5.NodeChildrenChanged事件需要重新调用getChildren来新的子节点列表，用于判断哪些子节点被修改。
  * 6.NodeDataChanged事件之后调用getData获取新的数据。但在getChildren或getData期间，znode状态可能会发生改变。
+ * @see ZooKeeper.ZKWatchManager#materialize(Event.KeeperState, Event.EventType, String)
  */
 @InterfaceAudience.Public
 public interface Watcher {

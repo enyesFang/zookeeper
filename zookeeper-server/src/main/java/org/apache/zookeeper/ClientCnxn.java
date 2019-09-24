@@ -96,7 +96,7 @@ import org.slf4j.MDC;
  * This class manages the socket i/o for the client. ClientCnxn maintains a list
  * of available servers to connect to and "transparently" switches servers it is
  * connected to as needed.
- *
+ * 负责所有的ZooKeeper节点操作的执行.
  */
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class ClientCnxn {
@@ -1523,6 +1523,7 @@ public class ClientCnxn {
             WatchDeregistration watchDeregistration)
             throws InterruptedException {
         ReplyHeader r = new ReplyHeader();
+        // 循环判断该请求包的状态是否结束，即处于阻塞状态
         Packet packet = queuePacket(h, r, request, response, null, null, null,
                 null, watchRegistration, watchDeregistration);
         synchronized (packet) {
@@ -1616,6 +1617,7 @@ public class ClientCnxn {
                 if (h.getType() == OpCode.closeSession) {
                     closing = true;
                 }
+                // 将请求包放入队列，等待sendThread执行。
                 outgoingQueue.add(packet);
             }
         }

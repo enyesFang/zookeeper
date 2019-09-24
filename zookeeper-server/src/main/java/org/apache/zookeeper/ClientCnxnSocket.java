@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * 
  * This code has been moved out of ClientCnxn so that a Netty implementation can
  * be provided as an alternative to the NIO socket code.
- * 
+ * 负责socket通信.
  */
 abstract class ClientCnxnSocket {
     private static final Logger LOG = LoggerFactory.getLogger(ClientCnxnSocket.class);

@@ -261,6 +261,7 @@ public class ZooKeeper implements AutoCloseable {
      * We are implementing this as a nested class of ZooKeeper so that
      * the public methods will not be exposed as part of the ZooKeeper client
      * API.
+     * 负责维护某个path上注册的Watcher.
      */
     static class ZKWatchManager implements ClientWatchManager {
         private final Map<String, Set<Watcher>> dataWatches =
@@ -1549,6 +1550,7 @@ public class ZooKeeper implements AutoCloseable {
 
         final String serverPath = prependChroot(clientPath);
 
+        // 创建CreateRequest，并交由ClientCnxn执行。
         RequestHeader h = new RequestHeader();
         h.setType(createMode.isContainer() ? ZooDefs.OpCode.createContainer : ZooDefs.OpCode.create);
         CreateRequest request = new CreateRequest();
@@ -3093,6 +3095,11 @@ public class ZooKeeper implements AutoCloseable {
         return cnxn.sendThread.getClientCnxnSocket().getLocalSocketAddress();
     }
 
+    /**
+     * 可以自定义拓展socket通信实现。
+     * @return
+     * @throws IOException
+     */
     private ClientCnxnSocket getClientCnxnSocket() throws IOException {
         String clientCnxnSocketName = getClientConfig().getProperty(
                 ZKClientConfig.ZOOKEEPER_CLIENT_CNXN_SOCKET);

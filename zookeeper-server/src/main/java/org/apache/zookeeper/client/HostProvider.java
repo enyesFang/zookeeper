@@ -42,6 +42,8 @@ import java.util.Collection;
  * * A HostProvider that loads the list of Hosts from an URL or from DNS 
  * * A HostProvider that re-resolves the InetSocketAddress after a timeout. 
  * * A HostProvider that prefers nearby hosts.
+ * HostProvider主要负责不断的对外提供可用的ZooKeeper服务器地址。
+ * 同时对于不同的ZooKeeper客户端，给出就近的ZooKeeper服务器地址等
  */
 @InterfaceAudience.Public
 public interface HostProvider {

@@ -156,6 +156,9 @@ public final class StaticHostProvider implements HostProvider {
         }
     }
 
+    /**
+     * 将服务器地址随机打乱排序。
+     */
     private List<InetSocketAddress> shuffle(Collection<InetSocketAddress> serverAddresses) {
         List<InetSocketAddress> tmpList = new ArrayList<>(serverAddresses.size());
         tmpList.addAll(serverAddresses);
